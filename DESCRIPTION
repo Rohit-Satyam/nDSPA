@@ -4,41 +4,28 @@ Title: nDSPA
 Version: 0.1.0
 Authors@R:
     c(person("Riyue", "Bao", email = "baor@upmc.edu", role = c("aut", "cph")),
-    person("Rohit", "Satyam", email="rohitsatyam102@gmail.com", role=c("ctb","cre")))
-Maintainer: Rohit Satyam <rohitsatyam102@gmail.com>
+    person("Rajesh","Acharya", email = "racharya.upmc@gmail.com", role=c("ctb","cre")),
+    person("Rohit", "Satyam", email="rohitsatyam102@gmail.com", role=c("ctb")))
 Description: An R package for quality metrics, preprocessing, visualization, and differential testing analysis of spatial omics data.
-Depends: R (>= 3.4.2)
+Depends: R (>= 4.0)
 License: CC0
 Encoding: UTF-8
 LazyData: true
-Imports: ComplexHeatmap,
-  DT,
-  GGally,
-  RColorBrewer,
-  circlize,
-  conflicted,
-  dplyr,
-  emmeans,
-  factoextra,
-  ggpubr,
-  ggrepel,
-  ggsci,
-  grid,
-  heatmaply,
-  lmerTest,
-  magick,
-  multcomp,
-  patchwork,
-  plotly,
-  reactable,
-  readr,
-  reshape2,
-  shiny,
-  shinyBS,
-  shinyWidgets,
-  shinydashboard,
-  shinyhelper,
-  shinyjs,
-  tidyr,
-  viridis
+Imports: 
+    SingleCellExperiment,
+    dplyr,
+    SummarizedExperiment,
+    magrittr,
+    S4Vectors,
+    rlang,
+    readxl,
+    readr,
+    tools,
+    methods,
+    tibble
 RoxygenNote: 7.1.1
+vignetteBuilder: knitr
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
