@@ -32,10 +32,10 @@
 dspNormalization <- function(seobj, use = "gmean", probe.set = "all", use.assay = "erccScaled") {
   probes <- rowData(seobj)
   if (isTRUE(probe.set == "all")) {
-    Controls <- probes$`ProbeName (display name)`[probes$`#CodeClass` == "Control" & probes$`#Analyte type` == "RNA"]
+    Controls <- probes$`ProbeName (display name)`[probes$`#CodeClass` == "Control" & (probes$`#Analyte type` == "RNA" | probes$`#Analyte type` == "Protein")]
   } else {
     # check if probes selected in probe list
-    ctrl_set <- probes$`ProbeName (display name)`[probes$`#CodeClass` == "Control" & probes$`#Analyte type` == "RNA"]
+    ctrl_set <- probes$`ProbeName (display name)`[probes$`#CodeClass` == "Control" & (probes$`#Analyte type` == "RNA" | probes$`#Analyte type` == "Protein")]
     not_in_set <- probe.set[!(probe.set %in% ctrl_set)]
     if (S4Vectors::isEmpty(not_in_set)) {
       cat("All Probes are in Control Probe Set")

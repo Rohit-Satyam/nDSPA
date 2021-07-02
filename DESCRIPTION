@@ -22,7 +22,19 @@ Imports:
     readr,
     tools,
     methods,
-    tibble
+    tibble,
+    lmerTest,
+    ggplot2,
+    plotly,
+    factoextra,
+    shiny,
+    shinythemes,
+    stats,
+    heatmaply,
+    multcomp,
+    lme4,
+    GGally,
+    tidyr
 RoxygenNote: 7.1.1
 vignetteBuilder: knitr
 Suggests: 

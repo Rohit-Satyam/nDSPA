@@ -33,10 +33,10 @@ dspSNR <- function(seobj, use = "gmean", probe.set = "all", use.assay = "erccSca
   probes <- rowData(seobj)
 
   if (probe.set == "all") {
-    Isotype <- probes$`ProbeName (display name)`[probes$`#CodeClass` == "Negative" & probes$`#Analyte type` == "RNA"]
+    Isotype <- probes$`ProbeName (display name)`[probes$`#CodeClass` == "Negative" & (probes$`#Analyte type` == "RNA"| probes$`#Analyte type` == "Protein")]
   } else {
     # check if probe.set selected in probe list
-    iso_set <- probes$`ProbeName (display name)`[probes$`#CodeClass` == "Negative" & probes$`#Analyte type` == "RNA"]
+    iso_set <- probes$`ProbeName (display name)`[probes$`#CodeClass` == "Negative" & (probes$`#Analyte type` == "RNA" | probes$`#Analyte type` == "Protein")]
     not_in_set <- probe.set[!(probe.set %in% iso_set)]
     if (S4Vectors::isEmpty(not_in_set)) {
       cat("All Probes are in Control Probe Set")

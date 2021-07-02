@@ -24,8 +24,8 @@
 #' @return ne Returns a ndspaExperiment object.
 #' @examples
 #' \dontrun{
-#' test <- readnDSPA("01-1.dsp_data.raw.sim.tsv", experiment = "RNA",
-#' meta = "01-2.dsp_roi.metadata.sim.tsv")
+#' test <- readnDSPA("02-1.dsp_data.raw.sim.tsv", experiment = "RNA",
+#' meta = "02-2.dsp_roi.metadata.sim.tsv")
 #' }
 
 readnDSPA <- function(x, experiment = c("Protein", "RNA", "CTA"), meta = NULL) {
