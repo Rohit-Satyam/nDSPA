@@ -1,4 +1,2 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^_pkgdown\.yml$
-^\.httr-oauth$
