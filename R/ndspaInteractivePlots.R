@@ -38,7 +38,6 @@ ndspaInteractivePlots <- function(seobj, use.assay = "counts") {
   Endo_probes <- probe$`ProbeName (display name)`[probe$`#CodeClass` == "Endogenous"]
   val_Endo <- val_all[rownames(val_all) %in% Endo_probes, ]
 
-
   shinyApp(
     ui = fluidPage(
       theme = shinytheme("flatly"),
@@ -51,7 +50,7 @@ ndspaInteractivePlots <- function(seobj, use.assay = "counts") {
           tabPanel(h5("PCA Samples", style = "font-family:'Trebuchet MS'"), plotlyOutput("pca_ind", width = "100%", height = "600px")),
           tabPanel(
             h5("Density", style = "font-family:'Trebuchet MS'"), tags$br(),
-            sidebarPanel(selectInput("category", "Select category to group plots", choices = as.list(colnames(anno)), selected = "Scan_ID")),
+            sidebarPanel(selectInput("category", "Select category to group plots", choices = as.list(c("Scan_ID","Segment tags")), selected = "Scan_ID")),
             mainPanel(plotlyOutput("density", width = "100%", height = "600px"))
           ),
           tabPanel(
@@ -110,7 +109,7 @@ ndspaInteractivePlots <- function(seobj, use.assay = "counts") {
           ggplot() +
           geom_density(aes(x = expr, color = ID), show.legend = FALSE) +
           ggplot2::theme_minimal() +
-          ggplot2::facet_wrap(input$category)
+          ggplot2::facet_wrap(paste0("`",input$category,"`"))
         plotly::ggplotly(p) %>% plotly::plotly_build()
       })
       ################# TAB 4 ######################################################
