@@ -1,0 +1,675 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+
+
+\usepackage{longtable,booktabs}
+\usepackage{graphicx}
+% grffile has become a legacy package: https://ctan.org/pkg/grffile
+\IfFileExists{grffile.sty}{%
+\usepackage{grffile}
+}{}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+\RequirePackage[]{D:/softwares/R-4.1.0/library/BiocStyle/resources/tex/Bioconductor}
+
+\bioctitle[An R package for quality metrics, preprocessing, visualization, and differential testing analysis of spatial omics data]{nDSPA: User Guide}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+\author[1]{Raj Acharya\thanks{\ttfamily acharyar2@upmc.edu}}
+\author[2]{Rohit Satyam}
+\author[1,3]{Riyue Bao}
+\affil[1]{Hillman Cancer Center, UPMC, Pittsburgh, PA 15232}
+\affil[2]{Jamia Millia Islamia, Jamia Nagar, Okhla, New Delhi, Delhi 110025}
+\affil[3]{Department of Medicine, University of Pittsburgh, Pittsburgh, PA 15232}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{21 July 2021}
+
+% code highlighting
+\definecolor{fgcolor}{rgb}{0.251, 0.251, 0.251}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.816,0.125,0.439}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.251,0.627,0.251}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.502,0.502,0.502}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.251,0.251,0.251}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.125,0.125,0.941}{#1}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.251,0.251,0.251}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.878,0.439,0.125}{#1}}%
+\let\hlipl\hlkwb
+%
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+%
+\newenvironment{Shaded}{\begin{myshaded}}{\end{myshaded}}
+% set background for result chunks
+\let\oldverbatim\verbatim
+\renewenvironment{verbatim}{\color{codecolor}\begin{myshaded}\begin{oldverbatim}}{\end{oldverbatim}\end{myshaded}}
+%
+\newcommand{\KeywordTok}[1]{\hlkwd{#1}}
+\newcommand{\DataTypeTok}[1]{\hlkwc{#1}}
+\newcommand{\DecValTok}[1]{\hlnum{#1}}
+\newcommand{\BaseNTok}[1]{\hlnum{#1}}
+\newcommand{\FloatTok}[1]{\hlnum{#1}}
+\newcommand{\ConstantTok}[1]{\hlnum{#1}}
+\newcommand{\CharTok}[1]{\hlstr{#1}}
+\newcommand{\SpecialCharTok}[1]{\hlstr{#1}}
+\newcommand{\StringTok}[1]{\hlstr{#1}}
+\newcommand{\VerbatimStringTok}[1]{\hlstr{#1}}
+\newcommand{\SpecialStringTok}[1]{\hlstr{#1}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\hlcom{#1}}
+\newcommand{\DocumentationTok}[1]{\hlcom{#1}}
+\newcommand{\AnnotationTok}[1]{\hlcom{#1}}
+\newcommand{\CommentVarTok}[1]{\hlcom{#1}}
+\newcommand{\OtherTok}[1]{{#1}}
+\newcommand{\FunctionTok}[1]{\hlstd{#1}}
+\newcommand{\VariableTok}[1]{\hlstd{#1}}
+\newcommand{\ControlFlowTok}[1]{\hlkwd{#1}}
+\newcommand{\OperatorTok}[1]{\hlopt{#1}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textit{#1}}
+\newcommand{\AttributeTok}[1]{{#1}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor{messagecolor}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor{warningcolor}{#1}}
+\newcommand{\AlertTok}[1]{\textcolor{errorcolor}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor{errorcolor}{#1}}
+\newcommand{\NormalTok}[1]{\hlstd{#1}}
+%
+\AtBeginDocument{\bibliographystyle{D:/softwares/R-4.1.0/library/BiocStyle/resources/tex/unsrturl}}
+
+
+\begin{document}
+\maketitle
+
+\packageVersion{nDSPA 0.1.1}
+
+\hypertarget{notice-to-the-users}{%
+\section{Notice to the users}\label{notice-to-the-users}}
+
+nDSPA has been tested on R \texttt{\textgreater{}= 4.0} and their is no version available at the
+moment for R \texttt{\textless{} 4.0}. This means that nDSPA might not work on lower versions of R.
+The users are therefore encouraged to update their R.
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Spatial-omics techniques provide a new solution towards an in-depth
+investigation of tumor-immune micro-environment (TIME) which quantifies
+spatially resolved transcriptomics or proteomics from digital pathology scans.
+Diagnosis and analysis of such data types requires development of new metrics,
+visualization, and statistical models taking into account the spatial features
+such as but not limited to, different cell segments, different tissue
+compartments, and multiple regions of interest (ROIs), all of which do not exist
+in traditional sequencing experiments.
+We introduce nDSPA (nanostring Digital Spatial Profiling Analysis), the first
+end-to-end open-source framework for the QC, data processing, normalization,
+visualization, and statistical comparisonsof DSP data (NanoString GeoMX).
+nDSPA implements a decision tree strategy to select the best suitable
+normalization method, visualizes spatial distribution of selected transcript or
+protein expression by spatial lollipop map, and identifies transcripts or
+proteins differentially abundant between cell segments (e.g.~tumor/immune cells)
+, tissue compartments (e.g.~tumor proximal/distal), or patients (e.g.~responders/non-responders) using linear-mixed effects models.
+nDSPA is an analysis and statistical suite designed for spatial omics data,
+and offers a unique solution from raw data to identification of quantitative
+features significantly associated with biological phenotypes or clinical groups.
+
+\begin{quote}
+nDSPA is under rapid development. Options might change between versions!
+\end{quote}
+
+\hypertarget{usage-example}{%
+\section{Usage example}\label{usage-example}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(nDSPA)}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{199}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{general-workflow}{%
+\subsection{General Workflow}\label{general-workflow}}
+
+The nanostring Digital Spatial Profiling Analysis involves the following steps:
+
+\hypertarget{input-data}{%
+\subsection{Input data}\label{input-data}}
+
+The test data files were simulated from DSP samples that we collected in the
+lab. The synthetic data is simulated from real-world data collected from tumor
+samples, and is only being used for demonstration purpose. It is therefore not
+recommended to use the test data for research or clinical questions.
+The sample simulated \texttt{RNA}, \texttt{Protein} and \texttt{CTA} data can be located using:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\NormalTok{fpath.rna }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"02{-}1.dsp\_data.raw.sim.tsv"}\NormalTok{, }\AttributeTok{package =} 
+                           \StringTok{"nDSPA"}\NormalTok{,}\AttributeTok{mustWork =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{fpath.prot }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"03{-}1.dsp\_data.prot.raw.sim.tsv"}\NormalTok{, }
+                          \AttributeTok{package =} \StringTok{"nDSPA"}\NormalTok{,}\AttributeTok{mustWork =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The \texttt{readnDSPA} functions reads the input file and converts it in
+\texttt{ndspaExperiment} object. Currently, the file formats allowed for the function
+includes \texttt{TSV}, \texttt{CSV} and \texttt{xlsx}. Other file formats will result in an error.
+
+The function takes two mandatory argument: The \texttt{x} i.e.~\textbf{path of the file}
+and \texttt{experiment} i.e.~type of experiment such as \texttt{"Protein"}, \texttt{"RNA"} or \texttt{"CTA"}
+.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fpath.rna }\OtherTok{\textless{}{-}} \StringTok{"D:/E/nDSPA/inst/extdata/02{-}1.dsp\_data.raw.sim.tsv"}
+\NormalTok{test.rna }\OtherTok{\textless{}{-}} \FunctionTok{readnDSPA}\NormalTok{(fpath.rna, }\AttributeTok{experiment =} \StringTok{"RNA"}\NormalTok{)}
+\CommentTok{\#\textgreater{} Warning: Missing column names filled in: \textquotesingle{}X2\textquotesingle{} [2], \textquotesingle{}X3\textquotesingle{} [3], \textquotesingle{}X4\textquotesingle{} [4]}
+\NormalTok{test.rna}
+\CommentTok{\#\textgreater{} class: ndspaExperiment }
+\CommentTok{\#\textgreater{} dim: 86 72 }
+\CommentTok{\#\textgreater{} metadata(1): RNA}
+\CommentTok{\#\textgreater{} assays(1): counts}
+\CommentTok{\#\textgreater{} rownames(86): BATF3 CD47 ... LAG3 TNF}
+\CommentTok{\#\textgreater{} rowData names(4): \#Probe Group \#Analyte type \#CodeClass ProbeName (display name)}
+\CommentTok{\#\textgreater{} colnames(72): P011 1A | 001 | CD45+ P011 1A | 018 | CD45+ ... P014 1A | 001 | CD45+}
+\CommentTok{\#\textgreater{}   P014 1A | 017 | CD45+}
+\CommentTok{\#\textgreater{} colData names(19): ROI ROI (label) ... Original\_ID ID}
+\CommentTok{\#\textgreater{} reducedDimNames(0):}
+\CommentTok{\#\textgreater{} mainExpName: NULL}
+\CommentTok{\#\textgreater{} altExpNames(0):}
+\NormalTok{fpath.prot }\OtherTok{\textless{}{-}} \StringTok{"D:/E/nDSPA/inst/extdata/03{-}1.dsp\_data.prot.raw.sim.tsv"}
+\NormalTok{test.prot }\OtherTok{\textless{}{-}} \FunctionTok{readnDSPA}\NormalTok{(fpath.prot, }\AttributeTok{experiment =} \StringTok{"Protein"}\NormalTok{)}
+\CommentTok{\#\textgreater{} Warning: Missing column names filled in: \textquotesingle{}X2\textquotesingle{} [2], \textquotesingle{}X3\textquotesingle{} [3], \textquotesingle{}X4\textquotesingle{} [4]}
+\NormalTok{test.prot}
+\CommentTok{\#\textgreater{} class: ndspaExperiment }
+\CommentTok{\#\textgreater{} dim: 41 15 }
+\CommentTok{\#\textgreater{} metadata(1): Protein}
+\CommentTok{\#\textgreater{} assays(1): counts}
+\CommentTok{\#\textgreater{} rownames(41): Ms IgG2a Ki{-}67 ... CD14 CD34}
+\CommentTok{\#\textgreater{} rowData names(4): \#Target Group \#Analyte type \#CodeClass ProbeName (display name)}
+\CommentTok{\#\textgreater{} colnames(15): P003 | 001 | CD45+ P003 | 002 | CD45+ ... P004 | 005 | CD45+ P004 | 006}
+\CommentTok{\#\textgreater{}   | CD45+}
+\CommentTok{\#\textgreater{} colData names(19): ROI ROI (label) ... Original\_ID ID}
+\CommentTok{\#\textgreater{} reducedDimNames(0):}
+\CommentTok{\#\textgreater{} mainExpName: NULL}
+\CommentTok{\#\textgreater{} altExpNames(0):}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ercc-scale-factor-calculation}{%
+\section{ERCC Scale Factor Calculation}\label{ercc-scale-factor-calculation}}
+
+External RNA Control Consortium (ERCC) spike-in are synthetic set of RNAs that
+can be used for normalisation. This is a mandatory step and the Scaling Factors
+are exploited in downstream analysis. To compute the ERCC Scaling Factors, we
+will use \texttt{erccScaleFactor} function.
+The processing steps performed will be automatically updated in the metadata
+section of the object to keep a track of preprocessing performed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test.rna }\OtherTok{\textless{}{-}} \FunctionTok{erccScaleFactor}\NormalTok{(test.rna)}
+\NormalTok{test.prot }\OtherTok{\textless{}{-}} \FunctionTok{erccScaleFactor}\NormalTok{(test.prot)}
+\NormalTok{test.rna}
+\CommentTok{\#\textgreater{} class: ndspaExperiment }
+\CommentTok{\#\textgreater{} dim: 86 72 }
+\CommentTok{\#\textgreater{} metadata(2): RNA erccScaleFactor}
+\CommentTok{\#\textgreater{} assays(1): counts}
+\CommentTok{\#\textgreater{} rownames(86): BATF3 CD47 ... LAG3 TNF}
+\CommentTok{\#\textgreater{} rowData names(4): \#Probe Group \#Analyte type \#CodeClass ProbeName (display name)}
+\CommentTok{\#\textgreater{} colnames(72): P011 1A | 001 | CD45+ P011 1A | 018 | CD45+ ... P014 1A | 001 | CD45+}
+\CommentTok{\#\textgreater{}   P014 1A | 017 | CD45+}
+\CommentTok{\#\textgreater{} colData names(20): ROI ROI (label) ... ID scalefactor}
+\CommentTok{\#\textgreater{} reducedDimNames(0):}
+\CommentTok{\#\textgreater{} mainExpName: NULL}
+\CommentTok{\#\textgreater{} altExpNames(0):}
+\FunctionTok{head}\NormalTok{(test.rna}\SpecialCharTok{@}\NormalTok{colData}\SpecialCharTok{$}\NormalTok{scalefactor)}
+\CommentTok{\#\textgreater{} [1] 1.0290239 1.0183795 0.9774740 1.0514798 0.8318075 0.9481652}
+\end{Highlighting}
+\end{Shaded}
+
+The scaling factors computed here can be used in to filter the data as desired.
+For example, we wish to get rid of samples that failed the criteria of
+\texttt{0.3 \textgreater{}= scalefactor \textless{}=3.0}. To achieve this, we can use \texttt{pcfIDsFilter()}
+function with default \texttt{PCF.min} and \texttt{PCF.max} values.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\NormalTok{idspcf.rna }\OtherTok{\textless{}{-}} \FunctionTok{pcfIDsFilter}\NormalTok{(test.rna)}
+\CommentTok{\#\textgreater{} Warning in pcfIDsFilter(test.rna): Failed Positive Control Factor: }
+\CommentTok{\#\textgreater{} P012 1A | 016 | CD45+, P014 1A | 016 | CD45+}
+\NormalTok{idspcf.prot }\OtherTok{\textless{}{-}} \FunctionTok{pcfIDsFilter}\NormalTok{(test.prot)}
+\CommentTok{\#\textgreater{} Warning in pcfIDsFilter(test.prot): No Samples filtred out by Positive Control Factor}
+\end{Highlighting}
+\end{Shaded}
+
+Further, the samples can be filtered based on FOV values, Binding Density,
+Minimum Nucleus Count, Minimum area etc. This can be acheved using the function \texttt{threshIDsFilter()}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{idstsh.rna }\OtherTok{\textless{}{-}} \FunctionTok{threshIDsFilter}\NormalTok{(test.rna)}
+\NormalTok{idstsh.prot }\OtherTok{\textless{}{-}} \FunctionTok{threshIDsFilter}\NormalTok{(test.rna)}
+
+\DocumentationTok{\#\# Common IDs can be obtained by}
+
+\NormalTok{ids }\OtherTok{\textless{}{-}} \FunctionTok{intersect}\NormalTok{(idspcf.rna,idstsh.rna)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{quality-control-and-data-filtering}{%
+\section{Quality Control and Data Filtering}\label{quality-control-and-data-filtering}}
+
+The QC step involves getting rid of the samples that failed the QC metrics and
+perform ERCC normalization of the data. The data quality can be evaluated via
+\texttt{ndspaInteractivePlots()} function. The function takes ndspaExperiment object
+and \texttt{assay="counts"} argument to launch a shiny app with insightful plots.Plots
+include \texttt{PCA}, \texttt{Density}, \texttt{Heatmap}, \texttt{correlation plots} (Background Vs
+House Keeping genes) and \texttt{SNR levels} etc.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ndspaInteractivePlots}\NormalTok{(test.rna)}
+\end{Highlighting}
+\end{Shaded}
+
+The Failed Positive Control Factor (PCFs) can be removed from the
+ndspaExperiment object using ndspaQC function. To check which samples will be
+retained and which sample will be removed use \texttt{tag.only=TRUE} argument. This
+will tag the samples if \texttt{PCF\_filt} argument is not \texttt{NULL}.
+
+If no additional argument is passed in \texttt{ndspaQC} function, only ERCC
+normalization will be performed with addition of new assay \texttt{erccScaled}. QC is
+not mandatory and can be skipped. However, it is desirable to use ERCC scaled
+values rather than raw counts.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dim}\NormalTok{(test.rna)}
+\CommentTok{\#\textgreater{} [1] 86 72}
+\NormalTok{temp }\OtherTok{\textless{}{-}} \FunctionTok{ndspaQC}\NormalTok{(test.rna, }\AttributeTok{PCF\_filt =}\NormalTok{ ids, }\AttributeTok{tag.only =} \ConstantTok{TRUE}\NormalTok{)}
+\FunctionTok{table}\NormalTok{(temp}\SpecialCharTok{@}\NormalTok{colData}\SpecialCharTok{$}\NormalTok{tag)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}  Removed Retained }
+\CommentTok{\#\textgreater{}       20       52}
+\NormalTok{test.rna }\OtherTok{\textless{}{-}} \FunctionTok{ndspaQC}\NormalTok{(test.rna, }\AttributeTok{PCF\_filt =}\NormalTok{ ids)}
+\FunctionTok{dim}\NormalTok{(test.rna)}
+\CommentTok{\#\textgreater{} [1] 86 52}
+\end{Highlighting}
+\end{Shaded}
+
+The \texttt{thresh\_filt} is under development and is not implemented in the current
+version. Samples are only tagged as ``Retained'' and ``Removed''. The samples that
+are removed during QC are enlisted in the metadata.This is the step, where the
+dimension of the data changes and can be accessed with
+\texttt{test.rna@metadata\$QCfilterIds}.
+
+Currently the colData is not populated with the tags of which filter they
+failed. This functionality will be added later.
+
+\hypertarget{scaling-and-normalization}{%
+\section{Scaling and normalization}\label{scaling-and-normalization}}
+
+\hypertarget{scaling}{%
+\subsection{Scaling}\label{scaling}}
+
+nDSPA allows scaling of the data using ``Area'' or ``Nuclei''. Calculation method
+for scaling includes ``mean'' and ``geomean'' (geometric mean).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test.rna }\OtherTok{\textless{}{-}} \FunctionTok{ndspaScale}\NormalTok{(test.rna,}\AttributeTok{use =}\StringTok{"gmean"}\NormalTok{, }\AttributeTok{method =} \StringTok{"area"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{normalisation}{%
+\subsection{Normalisation}\label{normalisation}}
+
+There are two methods of normalization provided by nDSPA. These include SNR
+Normalization and HouseKeeping Normalization. The housekeeping normalisation can
+be carried out by using \texttt{dspNormalization()} function while the SNR
+normalization can be performed using \texttt{dspSNR()}. The new assays will be named \texttt{gmeanHK\_Normalised} and \texttt{gmeanSNR\_Normalised}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test.rna }\OtherTok{\textless{}{-}} \FunctionTok{dspNormalization}\NormalTok{(test.rna, }\AttributeTok{use =} \StringTok{"gmean"}\NormalTok{, }\AttributeTok{probe.set=}\StringTok{"all"}\NormalTok{, }
+                             \AttributeTok{use.assay =} \StringTok{"areaScaled"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{statistical-comparisons}{%
+\section{Statistical comparisons}\label{statistical-comparisons}}
+
+The nDSPA have two separate functions for statistical analysis that are
+discussed below.
+
+\hypertarget{dimension-reduction}{%
+\subsection{Dimension Reduction}\label{dimension-reduction}}
+
+nDSPA \texttt{ndspaReducedims()} function uses \texttt{prcomp} for PCA and \texttt{M3C} for other
+low-dimensional representation of the data such as \texttt{tsne} and \texttt{umap}. To save
+the embedding produced in the ndspaExperiment object, we will use
+\texttt{reducedDims()} function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Considering only first 50 PCA. The Rank argument is the part of prcomp }
+\DocumentationTok{\#\# function and can be used as:}
+\NormalTok{test.rna.pca }\OtherTok{\textless{}{-}} \FunctionTok{ndspaReducedims}\NormalTok{(test.rna, }\AttributeTok{rank=}\DecValTok{50}\NormalTok{)}
+\NormalTok{test.rna.tsne }\OtherTok{\textless{}{-}} \FunctionTok{ndspaReducedims}\NormalTok{(test.rna, }\AttributeTok{type =} \StringTok{"tsne"}\NormalTok{,}
+                                 \AttributeTok{labels=}\NormalTok{test.rna}\SpecialCharTok{@}\NormalTok{colData}\SpecialCharTok{$}\NormalTok{Scan\_ID)}
+\NormalTok{test.rna.umap }\OtherTok{\textless{}{-}} \FunctionTok{ndspaReducedims}\NormalTok{(test.rna, }\AttributeTok{type =} \StringTok{"umap"}\NormalTok{,}
+                                 \AttributeTok{labels=}\NormalTok{test.rna}\SpecialCharTok{@}\NormalTok{colData}\SpecialCharTok{$}\NormalTok{Scan\_ID)}
+\end{Highlighting}
+\end{Shaded}
+
+The reduced dimensions can be saved to \texttt{ndspaExperiment} object \texttt{test.rna} as
+follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Adding the low{-}dimensional embeddings to ndspaExperiment object}
+\FunctionTok{reducedDims}\NormalTok{(test.rna) }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{PCA =}\NormalTok{ test.rna.pca}\SpecialCharTok{$}\NormalTok{x, }\AttributeTok{TSNE =}\NormalTok{ test.rna.tsne}\SpecialCharTok{$}\NormalTok{data, }\AttributeTok{UMAP=}\NormalTok{test.rna.umap}\SpecialCharTok{$}\NormalTok{data)}
+\end{Highlighting}
+\end{Shaded}
+
+Ploting the dimensional data in nDSPA is easy. The \texttt{tsne} ans \texttt{umap} objects
+produced by \texttt{ndspaReducedims} are ggplot objects. The PCA output is a \texttt{prcomp}
+object that can further be input to \texttt{fviz\_pca\_var()} function of \texttt{factoextra}
+package to make publication ready PCA plots.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# view PCA plot}
+\NormalTok{test.rna.pca }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ factoextra}\SpecialCharTok{::}\FunctionTok{fviz\_pca\_var}\NormalTok{(}\AttributeTok{label =} \StringTok{"var"}\NormalTok{, }\AttributeTok{title =} \StringTok{"Probes"}\NormalTok{, }
+    \AttributeTok{geom =} \FunctionTok{c}\NormalTok{(}\StringTok{"point"}\NormalTok{, }\StringTok{"text"}\NormalTok{), }\AttributeTok{col.var =} \StringTok{"contrib"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{adjustwidth}{\fltoffset}{0mm}
+\includegraphics[width=1\linewidth,]{nDSPA_files/figure-latex/unnamed-chunk-12-1} \end{adjustwidth}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# or}
+\NormalTok{test.rna.pca }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ factoextra}\SpecialCharTok{::}\FunctionTok{fviz\_pca\_ind}\NormalTok{(}\AttributeTok{label =} \StringTok{"ind"}\NormalTok{, }\AttributeTok{title =} \StringTok{"Samples"}\NormalTok{, }
+  \AttributeTok{geom =} \FunctionTok{c}\NormalTok{(}\StringTok{"point"}\NormalTok{), }\AttributeTok{habillage =}\NormalTok{ test.rna}\SpecialCharTok{@}\NormalTok{colData}\SpecialCharTok{$}\NormalTok{Scan\_ID, }\AttributeTok{addEllipses =} \ConstantTok{TRUE}\NormalTok{, }
+  \AttributeTok{ellipse.level =} \FloatTok{0.95}\NormalTok{) }\SpecialCharTok{+}\NormalTok{ ggplot2}\SpecialCharTok{::}\FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{adjustwidth}{\fltoffset}{0mm}
+\includegraphics[width=1\linewidth,]{nDSPA_files/figure-latex/unnamed-chunk-12-2} \end{adjustwidth}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\DocumentationTok{\#\# View tsne plot}
+\NormalTok{test.rna.tsne}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{adjustwidth}{\fltoffset}{0mm}
+\includegraphics[width=1\linewidth,]{nDSPA_files/figure-latex/unnamed-chunk-12-3} \end{adjustwidth}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\DocumentationTok{\#\# View umap plot}
+
+\NormalTok{test.rna.umap}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{adjustwidth}{\fltoffset}{0mm}
+\includegraphics[width=1\linewidth,]{nDSPA_files/figure-latex/unnamed-chunk-12-4} \end{adjustwidth}
+
+\begin{quote}
+The assays are log transformed internally before Dimensional Reduction takes
+place.
+\end{quote}
+
+\hypertarget{statistical-analysis}{%
+\subsection{Statistical Analysis}\label{statistical-analysis}}
+
+For statistical analysis, we should have group data with us. To load the group
+data
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\NormalTok{fpath.rna.gp }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"02{-}3.dsp\_group.sim.tsv"}\NormalTok{, }\AttributeTok{package =} 
+                           \StringTok{"nDSPA"}\NormalTok{,}\AttributeTok{mustWork =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{rna.gp.df }\OtherTok{=} \FunctionTok{read.delim}\NormalTok{(fpath.rna.gp, }\AttributeTok{stringsAsFactors =}\NormalTok{ F, }\AttributeTok{header =}\NormalTok{ T)}
+
+\DocumentationTok{\#\# Running the statistical analysis}
+\NormalTok{results }\OtherTok{\textless{}{-}} \FunctionTok{ndspaStats}\NormalTok{(test.rna,}\AttributeTok{group.df=}\NormalTok{rna.gp.df,}\AttributeTok{use.assay =} \StringTok{"gmeanHK\_Normalised"}\NormalTok{, }\AttributeTok{group.by=}\StringTok{"Scan\_ID"}\NormalTok{,}\AttributeTok{order=}\FunctionTok{c}\NormalTok{(}\StringTok{"NR"}\NormalTok{,}\StringTok{"R"}\NormalTok{),}\AttributeTok{segment.tag =} \StringTok{"CD45+"}\NormalTok{,}\AttributeTok{test=}\StringTok{"t.test"}\NormalTok{)}
+\CommentTok{\#\textgreater{} Groups Identified}
+\CommentTok{\#\textgreater{} Computing Statistics for CD45+.NR\_vs\_R}
+\CommentTok{\#\textgreater{} The minimum gene expresion value was found to be: }
+\CommentTok{\#\textgreater{} 0.00276189538956322}
+\CommentTok{\#\textgreater{} The maximum gene expresion value was found to be: }
+\CommentTok{\#\textgreater{} 96.7861912690162}
+\CommentTok{\#\textgreater{} [1] "BATF3"}
+\CommentTok{\#\textgreater{} [1] "CD47"}
+\CommentTok{\#\textgreater{} [1] "FAS"}
+\CommentTok{\#\textgreater{} [1] "STAT3"}
+\CommentTok{\#\textgreater{} [1] "CXCL10"}
+\CommentTok{\#\textgreater{} [1] "CD27"}
+\CommentTok{\#\textgreater{} [1] "CXCL9"}
+\CommentTok{\#\textgreater{} [1] "CCL5"}
+\CommentTok{\#\textgreater{} [1] "ITGAX"}
+\CommentTok{\#\textgreater{} [1] "HAVCR2"}
+\CommentTok{\#\textgreater{} [1] "ARG1"}
+\CommentTok{\#\textgreater{} [1] "FOXP3"}
+\CommentTok{\#\textgreater{} [1] "HLA{-}DRB"}
+\CommentTok{\#\textgreater{} [1] "IFNAR1"}
+\CommentTok{\#\textgreater{} [1] "EPCAM"}
+\CommentTok{\#\textgreater{} [1] "CCND1"}
+\CommentTok{\#\textgreater{} [1] "CD40LG"}
+\CommentTok{\#\textgreater{} [1] "IL6"}
+\CommentTok{\#\textgreater{} [1] "KRT"}
+\CommentTok{\#\textgreater{} [1] "ICOSLG"}
+\CommentTok{\#\textgreater{} [1] "CD68"}
+\CommentTok{\#\textgreater{} [1] "ITGB2"}
+\CommentTok{\#\textgreater{} [1] "STAT2"}
+\CommentTok{\#\textgreater{} [1] "PTPRC"}
+\CommentTok{\#\textgreater{} [1] "CXCR6"}
+\CommentTok{\#\textgreater{} [1] "NKG7"}
+\CommentTok{\#\textgreater{} [1] "HIF1A"}
+\CommentTok{\#\textgreater{} [1] "CD4"}
+\CommentTok{\#\textgreater{} [1] "DKK2"}
+\CommentTok{\#\textgreater{} [1] "GZMB"}
+\CommentTok{\#\textgreater{} [1] "MS4A1"}
+\CommentTok{\#\textgreater{} [1] "ITGAM"}
+\CommentTok{\#\textgreater{} [1] "CMKLR1"}
+\CommentTok{\#\textgreater{} [1] "VSIR"}
+\CommentTok{\#\textgreater{} [1] "CSF1R"}
+\CommentTok{\#\textgreater{} [1] "MKI67"}
+\CommentTok{\#\textgreater{} [1] "IL15"}
+\CommentTok{\#\textgreater{} [1] "STAT1"}
+\CommentTok{\#\textgreater{} [1] "CD40"}
+\CommentTok{\#\textgreater{} [1] "BCL2"}
+\CommentTok{\#\textgreater{} [1] "CD3E"}
+\CommentTok{\#\textgreater{} [1] "CTLA4"}
+\CommentTok{\#\textgreater{} [1] "ITGB8"}
+\CommentTok{\#\textgreater{} [1] "CD276"}
+\CommentTok{\#\textgreater{} [1] "PECAM1"}
+\CommentTok{\#\textgreater{} [1] "IDO1"}
+\CommentTok{\#\textgreater{} [1] "PTEN"}
+\CommentTok{\#\textgreater{} [1] "CD74"}
+\CommentTok{\#\textgreater{} [1] "B2M"}
+\CommentTok{\#\textgreater{} [1] "HLA{-}DQ"}
+\CommentTok{\#\textgreater{} [1] "CD274"}
+\CommentTok{\#\textgreater{} [1] "ITGAV"}
+\CommentTok{\#\textgreater{} [1] "CD44"}
+\CommentTok{\#\textgreater{} [1] "TBX21"}
+\CommentTok{\#\textgreater{} [1] "CTNNB1"}
+\CommentTok{\#\textgreater{} [1] "TIGIT"}
+\CommentTok{\#\textgreater{} [1] "TNFRSF9"}
+\CommentTok{\#\textgreater{} [1] "IL12B"}
+\CommentTok{\#\textgreater{} [1] "PDCD1LG2"}
+\CommentTok{\#\textgreater{} [1] "AKT1"}
+\CommentTok{\#\textgreater{} [1] "HLA{-}E"}
+\CommentTok{\#\textgreater{} [1] "pan{-}melanocyte"}
+\CommentTok{\#\textgreater{} [1] "IFNGR1"}
+\CommentTok{\#\textgreater{} [1] "ICAM1"}
+\CommentTok{\#\textgreater{} [1] "PSMB10"}
+\CommentTok{\#\textgreater{} [1] "VEGFA"}
+\CommentTok{\#\textgreater{} [1] "IFNG"}
+\CommentTok{\#\textgreater{} [1] "CD8A"}
+\CommentTok{\#\textgreater{} [1] "CD86"}
+\CommentTok{\#\textgreater{} [1] "LY6E"}
+\CommentTok{\#\textgreater{} [1] "PDCD1"}
+\CommentTok{\#\textgreater{} [1] "LAG3"}
+\CommentTok{\#\textgreater{} [1] "TNF"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{session-information}{%
+\section*{Session Information}\label{session-information}}
+\addcontentsline{toc}{section}{Session Information}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{sessionInfo}\NormalTok{()}
+\CommentTok{\#\textgreater{} R version 4.1.0 (2021{-}05{-}18)}
+\CommentTok{\#\textgreater{} Platform: x86\_64{-}w64{-}mingw32/x64 (64{-}bit)}
+\CommentTok{\#\textgreater{} Running under: Windows 10 x64 (build 19043)}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Matrix products: default}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} locale:}
+\CommentTok{\#\textgreater{} [1] LC\_COLLATE=English\_India.1252  LC\_CTYPE=English\_India.1252    LC\_MONETARY=English\_India.1252}
+\CommentTok{\#\textgreater{} [4] LC\_NUMERIC=C                   LC\_TIME=English\_India.1252    }
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} attached base packages:}
+\CommentTok{\#\textgreater{} [1] stats     graphics  grDevices utils     datasets  methods   base     }
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} other attached packages:}
+\CommentTok{\#\textgreater{} [1] BiocStyle\_2.20.2 nDSPA\_0.1.1      devtools\_2.4.2   usethis\_2.0.1    rmarkdown\_2.9   }
+\CommentTok{\#\textgreater{} [6] tinytex\_0.32    }
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} loaded via a namespace (and not attached):}
+\CommentTok{\#\textgreater{}   [1] utf8\_1.2.1                  reticulate\_1.20             tidyselect\_1.1.1           }
+\CommentTok{\#\textgreater{}   [4] lme4\_1.1{-}27.1               heatmaply\_1.2.1             htmlwidgets\_1.5.3          }
+\CommentTok{\#\textgreater{}   [7] grid\_4.1.0                  TSP\_1.1{-}10                  Rtsne\_0.15                 }
+\CommentTok{\#\textgreater{}  [10] munsell\_0.5.0               codetools\_0.2{-}18            umap\_0.2.7.0               }
+\CommentTok{\#\textgreater{}  [13] M3C\_1.14.0                  withr\_2.4.2                 colorspace\_2.0{-}2           }
+\CommentTok{\#\textgreater{}  [16] Biobase\_2.52.0              knitr\_1.33                  rstudioapi\_0.13            }
+\CommentTok{\#\textgreater{}  [19] stats4\_4.1.0                SingleCellExperiment\_1.14.1 ggsignif\_0.6.2             }
+\CommentTok{\#\textgreater{}  [22] labeling\_0.4.2              MatrixGenerics\_1.4.0        GenomeInfoDbData\_1.2.6     }
+\CommentTok{\#\textgreater{}  [25] farver\_2.1.0                rprojroot\_2.0.2             vctrs\_0.3.8                }
+\CommentTok{\#\textgreater{}  [28] generics\_0.1.0              TH.data\_1.0{-}10              xfun\_0.24                  }
+\CommentTok{\#\textgreater{}  [31] R6\_2.5.0                    doParallel\_1.0.16           GenomeInfoDb\_1.28.1        }
+\CommentTok{\#\textgreater{}  [34] seriation\_1.3.0             bitops\_1.0{-}7                cachem\_1.0.5               }
+\CommentTok{\#\textgreater{}  [37] reshape\_0.8.8               DelayedArray\_0.18.0         assertthat\_0.2.1           }
+\CommentTok{\#\textgreater{}  [40] promises\_1.2.0.1            scales\_1.1.1                multcomp\_1.4{-}17            }
+\CommentTok{\#\textgreater{}  [43] gtable\_0.3.0                processx\_3.5.2              sandwich\_3.0{-}1             }
+\CommentTok{\#\textgreater{}  [46] rlang\_0.4.11                splines\_4.1.0               rstatix\_0.7.0              }
+\CommentTok{\#\textgreater{}  [49] lazyeval\_0.2.2              broom\_0.7.8                 BiocManager\_1.30.16        }
+\CommentTok{\#\textgreater{}  [52] yaml\_2.2.1                  abind\_1.4{-}5                 backports\_1.2.1            }
+\CommentTok{\#\textgreater{}  [55] httpuv\_1.6.1                tools\_4.1.0                 bookdown\_0.22              }
+\CommentTok{\#\textgreater{}  [58] ggplot2\_3.3.5               ellipsis\_0.3.2              RColorBrewer\_1.1{-}2         }
+\CommentTok{\#\textgreater{}  [61] BiocGenerics\_0.38.0         sessioninfo\_1.1.1           Rcpp\_1.0.7                 }
+\CommentTok{\#\textgreater{}  [64] plyr\_1.8.6                  zlibbioc\_1.38.0             purrr\_0.3.4                }
+\CommentTok{\#\textgreater{}  [67] RCurl\_1.98{-}1.3              ps\_1.6.0                    prettyunits\_1.1.1          }
+\CommentTok{\#\textgreater{}  [70] ggpubr\_0.4.0                openssl\_1.4.4               viridis\_0.6.1              }
+\CommentTok{\#\textgreater{}  [73] S4Vectors\_0.30.0            zoo\_1.8{-}9                   SummarizedExperiment\_1.22.0}
+\CommentTok{\#\textgreater{}  [76] haven\_2.4.1                 ggrepel\_0.9.1               cluster\_2.1.2              }
+\CommentTok{\#\textgreater{}  [79] fs\_1.5.0                    factoextra\_1.0.7            magrittr\_2.0.1             }
+\CommentTok{\#\textgreater{}  [82] magick\_2.7.2                data.table\_1.14.0           RSpectra\_0.16{-}0            }
+\CommentTok{\#\textgreater{}  [85] openxlsx\_4.2.4              lmerTest\_3.1{-}3              mvtnorm\_1.1{-}2              }
+\CommentTok{\#\textgreater{}  [88] matrixcalc\_1.0{-}4            matrixStats\_0.59.0          pkgload\_1.2.1              }
+\CommentTok{\#\textgreater{}  [91] hms\_1.1.0                   mime\_0.11                   evaluate\_0.14              }
+\CommentTok{\#\textgreater{}  [94] xtable\_1.8{-}4                rio\_0.5.27                  readxl\_1.3.1               }
+\CommentTok{\#\textgreater{}  [97] IRanges\_2.26.0              gridExtra\_2.3               testthat\_3.0.4             }
+\CommentTok{\#\textgreater{} [100] compiler\_4.1.0              tibble\_3.1.2                crayon\_1.4.1               }
+\CommentTok{\#\textgreater{} [103] minqa\_1.2.4                 htmltools\_0.5.1.1           corpcor\_1.6.9              }
+\CommentTok{\#\textgreater{} [106] later\_1.2.0                 snow\_0.4{-}3                  tidyr\_1.1.3                }
+\CommentTok{\#\textgreater{} [109] DBI\_1.1.1                   MASS\_7.3{-}54                 boot\_1.3{-}28                }
+\CommentTok{\#\textgreater{} [112] Matrix\_1.3{-}4                car\_3.0{-}11                  readr\_1.4.0                }
+\CommentTok{\#\textgreater{} [115] cli\_3.0.1                   parallel\_4.1.0              GenomicRanges\_1.44.0       }
+\CommentTok{\#\textgreater{} [118] forcats\_0.5.1               pkgconfig\_2.0.3             registry\_0.5{-}1             }
+\CommentTok{\#\textgreater{} [121] numDeriv\_2016.8{-}1.1         foreign\_0.8{-}81              plotly\_4.9.4.1             }
+\CommentTok{\#\textgreater{} [124] xml2\_1.3.2                  roxygen2\_7.1.1              foreach\_1.5.1              }
+\CommentTok{\#\textgreater{} [127] webshot\_0.5.2               XVector\_0.32.0              stringr\_1.4.0              }
+\CommentTok{\#\textgreater{} [130] callr\_3.7.0                 digest\_0.6.27               cellranger\_1.1.0           }
+\CommentTok{\#\textgreater{} [133] dendextend\_1.15.1           curl\_4.3.2                  shiny\_1.6.0                }
+\CommentTok{\#\textgreater{} [136] nloptr\_1.2.2.2              lifecycle\_1.0.0             nlme\_3.1{-}152               }
+\CommentTok{\#\textgreater{} [139] jsonlite\_1.7.2              carData\_3.0{-}4               desc\_1.3.0                 }
+\CommentTok{\#\textgreater{} [142] viridisLite\_0.4.0           askpass\_1.1                 fansi\_0.5.0                }
+\CommentTok{\#\textgreater{} [145] pillar\_1.6.1                lattice\_0.20{-}44             GGally\_2.1.2               }
+\CommentTok{\#\textgreater{} [148] fastmap\_1.1.0               httr\_1.4.2                  pkgbuild\_1.2.0             }
+\CommentTok{\#\textgreater{} [151] survival\_3.2{-}11             glue\_1.4.2                  remotes\_2.4.0              }
+\CommentTok{\#\textgreater{} [154] zip\_2.2.0                   png\_0.1{-}7                   shinythemes\_1.2.0          }
+\CommentTok{\#\textgreater{} [157] iterators\_1.0.13            stringi\_1.6.2               doSNOW\_1.0.19              }
+\CommentTok{\#\textgreater{} [160] memoise\_2.0.0               dplyr\_1.0.7}
+\end{Highlighting}
+\end{Shaded}
+
+
+
+\end{document}

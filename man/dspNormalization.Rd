@@ -37,6 +37,6 @@ test <- dspNormalization(test, use = "gmean", probe.set="all",
 use.assay = "erccScaled")
 # OR
 test <- dspNormalization(test, use = "gmean", probe.set="all",
-use.assay = "area.scaled.data")
+use.assay = "areaScaled")
 }
 }

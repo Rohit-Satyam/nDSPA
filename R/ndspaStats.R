@@ -30,8 +30,10 @@
 #' @examples
 #' \dontrun{
 #' # To plot all QC graphs
-#' dsp.group = read.delim("02-3.dsp_group.sim.tsv", stringsAsFactors = F, header = T)
-#' results <- ndspaStats(test,group.df=dsp.group,group.by="Scan_ID",order=c("NR","R"),segment.tag = "CD45+",test="t.test")
+#' dsp.group = read.delim("02-3.dsp_group.sim.tsv",
+#' stringsAsFactors = F, header = T)
+#' results <- ndspaStats(test,group.df=dsp.group,group.by="Scan_ID",
+#' order=c("NR","R"),segment.tag = "CD45+",test="t.test")
 #'
 #'
 #' }
@@ -45,7 +47,7 @@ ndspaStats <- function(seobj, group.df = NULL, group.by = NULL, order = NULL, se
   } else {
     stop("Provide Sample Group Information\n")
   }
-  val_all <- assay(seobj, assay)
+  val_all <- assay(seobj, use.assay)
   probes <- data.frame(rowData(seobj), check.names = FALSE)
   endo <- val_all[which(probes$`#CodeClass` == "Endogenous"), ]
   ercc <- val_all[which(probes$`#CodeClass` == "Positive" & probes$`#Analyte type` == "SpikeIn"), , drop = F]
@@ -135,7 +137,7 @@ ndspaStats <- function(seobj, group.df = NULL, group.by = NULL, order = NULL, se
     ## random effect: Scan_ID
     ## fixed effect: group
 
-    lmer.out <- lmerTest::lmer()(Gene ~ 0 + group + (1 | Scan_ID), data = my.df, REML = T)
+    lmer.out <- lmerTest::lmer(Gene ~ 0 + group + (1 | Scan_ID), data = my.df, REML = T)
     # parameter estimates
     summary(lmer.out)
     # set up contrasts: group1 vs group2
@@ -198,15 +200,6 @@ ndspaStats <- function(seobj, group.df = NULL, group.by = NULL, order = NULL, se
   return(stats.df)
 }
 
-.gmean <- function(x, method = "log") {
-  if (method == "log") {
-    # Safer method does not produce overflows
-    gm <- exp(mean(log(x)))
-  } else if (method == "mult") {
-    gm <- prod(x)^(1 / len(x))
-  }
-  return(gm)
-}
 
 if (getRversion() >= "2.15.1") utils::globalVariables(c(".", "Scan_ID", "#CodeClass", "#Analyte type", "ProbeName (display name)", "Segment tags", "ROI_ID", "group", "len"))
 #styler:::style_active_file()

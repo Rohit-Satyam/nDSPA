@@ -19,14 +19,12 @@
 erccScaleFactor <- function(seobj) {
   probes <- SummarizedExperiment::rowData(seobj) # DFrame
   val.all <- SummarizedExperiment::assay(seobj) ## Matrix object
-
   ERCC_Probes <- probes$`ProbeName (display name)`[probes$`#CodeClass` == "Positive" & probes$`#Analyte type` == "SpikeIn"]
-
   # check before here that input values are data.matrix with numeric data
   PosCtrl_mat <- val.all[ERCC_Probes, ]
 
 
-  # Need trycatch handling
+  # trycatch handling
   if (is.null(dim(PosCtrl_mat))) {
     if (length(PosCtrl_mat) == 0) {
       stop("There are no ERCC_Probes")
@@ -46,7 +44,7 @@ erccScaleFactor <- function(seobj) {
 
   scalefactor <- mean(normfactors) / normfactors
   SummarizedExperiment::colData(seobj)$scalefactor <- data.frame(scalefactor)$scalefactor
-  S4Vectors::metadata(seobj) <- c(S4Vectors::metadata(seobj), "erccScaling" = "ERCC Scaling was performed.")
+  S4Vectors::metadata(seobj) <- c(S4Vectors::metadata(seobj), "erccScaleFactor" = "ERCC Scale Factors were computed.")
   return(seobj)
 }
 

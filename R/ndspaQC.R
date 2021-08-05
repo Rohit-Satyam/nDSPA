@@ -36,8 +36,9 @@ ndspaQC <- function(seobj, thresh_filt = NULL, PCF_filt = NULL, tag.only = FALSE
     }
     if (!is.null(PCF_filt)) {
       anno <- data.frame(anno, check.names = FALSE)
+      S4Vectors::metadata(seobj) <- c(S4Vectors::metadata(seobj), "QCfilterIDs" = list(setdiff(anno$Original_ID,PCF_filt)))
       anno <- anno %>% dplyr::filter(Original_ID %in% PCF_filt)
-      S4Vectors::metadata(seobj) <- c(S4Vectors::metadata(seobj), "QC.Filter.IDs" = list(PCF_filt))
+
     }
 
     if (isFALSE("scalefactor" %in% colnames(colData(seobj)))) {

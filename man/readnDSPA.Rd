@@ -25,7 +25,7 @@ The readnDSPA function is built at top of SingleCellExperiment object and is use
 }
 \examples{
 \dontrun{
-test <- readnDSPA("01-1.dsp_data.raw.sim.tsv", experiment = "RNA",
-meta = "01-2.dsp_roi.metadata.sim.tsv")
+test <- readnDSPA("02-1.dsp_data.raw.sim.tsv", experiment = "RNA",
+meta = "02-2.dsp_roi.metadata.sim.tsv")
 }
 }

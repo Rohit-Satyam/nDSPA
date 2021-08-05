@@ -26,11 +26,11 @@
 #' use.assay = "erccScaled")
 #' # OR
 #' test <- dspNormalization(test, use = "gmean", probe.set="all",
-#' use.assay = "area.scaled.data")
+#' use.assay = "areaScaled")
 #' }
 
 dspNormalization <- function(seobj, use = "gmean", probe.set = "all", use.assay = "erccScaled") {
-  probes <- rowData(seobj)
+  probes <- SummarizedExperiment::rowData(seobj)
   if (isTRUE(probe.set == "all")) {
     Controls <- probes$`ProbeName (display name)`[probes$`#CodeClass` == "Control" & (probes$`#Analyte type` == "RNA" | probes$`#Analyte type` == "Protein")]
   } else {
@@ -92,8 +92,9 @@ dspNormalization <- function(seobj, use = "gmean", probe.set = "all", use.assay 
   }
   norm_mat <- t(t(assay(seobj, use.assay)) * scalefactor)
   l <- list(norm_mat)
-  names(l) <- paste0(use, "Normalised")
+  names(l) <- paste0(use, "HK_Normalised")
   assays(seobj) <- c(assays(seobj), l)
+  S4Vectors::metadata(seobj) <- c(S4Vectors::metadata(seobj), "Normalization" = paste("Housekeeping normalization was performed on",use.assay,"using",use,". Probset used were:",probe.set))
   return(seobj)
 }
 

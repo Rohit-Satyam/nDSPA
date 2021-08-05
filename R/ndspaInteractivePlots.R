@@ -83,7 +83,7 @@ ndspaInteractivePlots <- function(seobj, use.assay = "counts") {
         val_Endo <- val_Endo
         anno <- anno
         p <- data.matrix(val_Endo) %>%
-          t() %>%
+          t() %>% apply(2, log) %>%
           stats::prcomp() %>%
           factoextra::fviz_pca_ind(label = "ind", title = "Samples", geom = c("point"), habillage = anno$Scan_ID, addEllipses = TRUE, ellipse.level = 0.95) + ggplot2::theme_minimal()
         pp <- plotly::ggplotly(p) %>% plotly::plotly_build()
@@ -92,7 +92,7 @@ ndspaInteractivePlots <- function(seobj, use.assay = "counts") {
       output$pca_var <- renderPlotly({
         val_Endo <- val_Endo
         p <- data.matrix(val_Endo) %>%
-          t() %>%
+          t() %>% apply(2, log) %>%
           prcomp() %>%
           fviz_pca_var(label = "var", title = "Probes", geom = c("point", "text"), col.var = "contrib") + theme_minimal()
         plotly::ggplotly(p) %>% plotly::plotly_build()

@@ -9,6 +9,7 @@
 #' @import dplyr
 #' @importFrom S4Vectors merge metadata
 #' @importFrom rlang .data
+#' @importFrom purrr set_names map
 #' @importFrom readr read_tsv
 #' @importFrom readxl read_excel
 #' @importFrom readr read_csv
@@ -42,8 +43,12 @@ readnDSPA <- function(x, experiment = c("Protein", "RNA", "CTA"), meta = NULL) {
       `rownames<-`(.$names)
   }
   # Imp function/test data type
-
+  if (experiment == "Protein" | experiment == "RNA"){
   df <- .readfn(inputext, x)
+  } else if (experiment == "CTA"){
+    df <- .readCTA(inputext, x)
+  }
+  else {stop("Choose an appropriate experiment type!!")}
 
 
 
@@ -55,10 +60,17 @@ readnDSPA <- function(x, experiment = c("Protein", "RNA", "CTA"), meta = NULL) {
          stop("Experiment type not provided"))
   names(exp_type) <- experiment
   ###### Parsing Data and making ndspa Object##########################
-
+if (experiment == "Protein" | experiment == "RNA"){
   anno <- .cut_anno(df)
   probes <- .cut_probes(df)
   val.All <- .cut_vals(df, anno, probes)
+} else if (experiment=="CTA") {
+  anno <- df[[1]]
+  col.names <- colnames(df[[2]])
+  probes <- df[[2]] %>% select(seq_len(which(col.names =="GeneID"))) %>% `rownames<-`(.$ProbeName)
+  val.All <- df[[2]] %>% select(-seq_len(which(colnames(probes)=="GeneID")))
+
+}
 
   if (!is.null(meta)) {
     anno <- S4Vectors::merge(x = anno, y = select(meta_df, c(names,x, y)),
@@ -130,7 +142,22 @@ readnDSPA <- function(x, experiment = c("Protein", "RNA", "CTA"), meta = NULL) {
   }
 }
 
-if (getRversion() >= "2.15.1") utils::globalVariables(c(".", "Original_ID"))
+.readCTA <- function(type, file) {
+  if (type == "xlsx") {
+    df <- file %>%
+      readxl::excel_sheets() %>%
+      purrr::set_names() %>%
+      purrr::map(read_excel,
+                 path = file)
+
+  } else {
+    stop("CTA data can only be loaded in .xlsx format.
+                   Refer documentation for details")
+  }
+}
+
+
+if (getRversion() >= "2.15.1") utils::globalVariables(c(".", "Original_ID","GeneID","ProbeName"))
 
 
 # styler:::style_active_file()
