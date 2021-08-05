@@ -31,15 +31,17 @@ ndspaScale <- function(seobj, use = c("mean", "gmean"), method = "area") {
 
   if (use == "gmean") {
     if (method == "area") {
-      geomean_scale_area <- (anno$`AOI surface area` %>% as.character() %>% as.numeric() %>% gmean()) / (anno$`AOI surface area` %>% as.character() %>% as.numeric())
+      geomean_scale_area <- (anno$`AOI surface area` %>% as.character() %>% as.numeric() %>% .gmean()) / (anno$`AOI surface area` %>% as.character() %>% as.numeric())
       scaled_df <- t(t(counts) * geomean_scale_area)
     } else {
-      geomean_scale_nuclei <- (anno$`AOI nuclei count` %>% as.character() %>% as.numeric() %>% gmean()) / (anno$`AOI nuclei count` %>% as.character() %>% as.numeric())
+      geomean_scale_nuclei <- (anno$`AOI nuclei count` %>% as.character() %>% as.numeric() %>% .gmean()) / (anno$`AOI nuclei count` %>% as.character() %>% as.numeric())
       scaled_df <- t(t(counts) * geomean_scale_nuclei)
     }
+
     l <- list(scaled_df)
-    names(l) <- "scaled.data"
+    names(l) <- paste0(method,"Scaled")
     assays(seobj) <- c(assays(seobj), l)
+    S4Vectors::metadata(seobj) <- c(S4Vectors::metadata(seobj), "Scaling" = paste(method,"Scaling was performed using",use))
     return(seobj)
   } else if (use == "mean") {
     if (method == "area") {
@@ -50,12 +52,14 @@ ndspaScale <- function(seobj, use = c("mean", "gmean"), method = "area") {
       scaled_df <- t(t(counts) * mean_scale_nuclei)
     }
     l <- list(scaled_df)
-    names(l) <- paste0(method,".scaled.data")
+    names(l) <- paste0(method,".Scaled")
     assays(seobj) <- c(assays(seobj), l)
+    S4Vectors::metadata(seobj) <- c(S4Vectors::metadata(seobj), "Scaling" = paste(method,"Scaling was performed using",use))
     return(seobj)
   } else {
     stop("Provide use argument.")
   }
 }
 if (getRversion() >= "2.15.1") utils::globalVariables(c(".", "gmean", "y"))
+
 #styler:::style_active_file()

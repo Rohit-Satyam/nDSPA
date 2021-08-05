@@ -1,19 +1,296 @@
 ---
-title: "nDSPA"
-output: rmarkdown::html_vignette
+title: "nDSPA: User Guide"
+shorttitle: "An R package for quality metrics, preprocessing, visualization, and differential testing analysis of spatial omics data"
+author:
+- name: Raj Acharya
+  affiliation: Hillman Cancer Center, UPMC, Pittsburgh, PA 15232
+  email: acharyar2@upmc.edu
+- name: Rohit Satyam
+  affiliation: Jamia Millia Islamia, Jamia Nagar, Okhla, New Delhi, Delhi 110025
+- name: Riyue Bao
+  affiliation: 
+  - Hillman Cancer Center, UPMC, Pittsburgh, PA 15232
+  - Department of Medicine, University of Pittsburgh, Pittsburgh, PA 15232
+  
+package: nDSPA 0.1.2
+output: 
+    BiocStyle::html_document:
+      toc_float: true
 vignette: >
-  %\VignetteIndexEntry{nDSPA}
+  %\VignetteIndexEntry{nDSPA: User Guide}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\VignetteEncoding{UTF-8}  
 ---
 
+  
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  dev = "jpeg"
 )
 ```
+# Notice to the users
 
-```{r setup}
+
+nDSPA has been tested on R `>= 4.0` and their is no version available at the 
+moment for R `< 4.0`. This means that nDSPA might not work on lower versions of R.
+The users are therefore encouraged to update their R. 
+
+# Introduction
+
+
+Spatial-omics techniques provide a new solution towards an in-depth 
+investigation of tumor-immune micro-environment (TIME) which quantifies 
+spatially resolved transcriptomics or proteomics from digital pathology scans. 
+Diagnosis  and analysis of such data types requires development of new metrics, 
+visualization, and statistical models taking into account the spatial features 
+such as but not limited to, different cell segments, different tissue 
+compartments, and multiple regions of interest (ROIs), all of which do not exist
+in traditional sequencing experiments. 
+<br>
+We introduce nDSPA (nanostring Digital Spatial Profiling Analysis), the first 
+end-to-end open-source framework for the QC, data processing, normalization, 
+visualization, and statistical comparisonsof DSP data (NanoString GeoMX). 
+nDSPA implements a decision tree strategy to select the best suitable 
+normalization method, visualizes spatial distribution of selected transcript or 
+protein expression by spatial lollipop map, and identifies transcripts or 
+proteins differentially abundant between cell segments (e.g. tumor/immune cells)
+, tissue compartments (e.g. tumor proximal/distal), or patients (e.g. responders/non-responders) using linear-mixed effects models. 
+<br>
+nDSPA is an analysis and statistical suite designed for spatial omics data, 
+and offers a unique solution from raw data to identification of quantitative 
+features significantly associated with biological phenotypes or clinical groups.
+
+>nDSPA is under rapid development. Options might change between versions!
+
+# Usage example
+
+
+
+```{r setup, eval=TRUE}
 library(nDSPA)
+set.seed(199)
 ```
+## General Workflow
+
+The nanostring Digital Spatial Profiling Analysis involves the following steps:
+
+## Input data
+
+The test data files were simulated from DSP samples that we collected in the 
+lab. The synthetic data is simulated from real-world data collected from tumor 
+samples, and is only being used for demonstration purpose. It is therefore not 
+recommended to use the test data for research or clinical questions.
+<br>
+The sample simulated `RNA`, `Protein` and `CTA` data can be located using:
+
+```{r loaddata, eval=TRUE}
+
+fpath.rna <- system.file("extdata", "02-1.dsp_data.raw.sim.tsv", package = 
+                           "nDSPA",mustWork = TRUE)
+fpath.prot <- system.file("extdata", "03-1.dsp_data.prot.raw.sim.tsv", 
+                          package = "nDSPA",mustWork = TRUE)
+```
+
+The `readnDSPA` functions reads the input file and converts it in 
+`ndspaExperiment` object. Currently, the file formats allowed for the function 
+includes `TSV`, `CSV` and `xlsx`. Other file formats will result in an error.
+
+The function takes two mandatory argument: The `x` i.e. __path of the file__ 
+and `experiment` i.e. type of experiment such as `"Protein"`, `"RNA"` or `"CTA"`
+.
+
+```{r, eval=TRUE}
+test.rna <- readnDSPA(fpath.rna, experiment = "RNA")
+test.rna
+test.prot <- readnDSPA(fpath.prot, experiment = "Protein")
+test.prot
+
+```
+
+# ERCC Scale Factor Calculation
+
+External RNA Control Consortium (ERCC) spike-in are synthetic set of RNAs that 
+can be used for normalisation. This is a mandatory step and the Scaling Factors 
+are exploited in downstream analysis. To compute the ERCC Scaling Factors, we
+will use `erccScaleFactor` function. 
+<br>
+The processing steps performed will be automatically updated in the metadata 
+section of the object to keep a track of preprocessing performed.
+
+```{r eval=TRUE}
+test.rna <- erccScaleFactor(test.rna)
+test.prot <- erccScaleFactor(test.prot)
+test.rna
+head(test.rna@colData$scalefactor)
+
+```
+
+The scaling factors computed here can be used in to filter the data as desired.
+For example, we wish to get rid of samples that failed the criteria of 
+`0.3 >= scalefactor <=3.0`. To achieve this, we can use `pcfIDsFilter()` 
+function with default `PCF.min` and `PCF.max` values.
+
+```{r eval=TRUE}
+
+idspcf.rna <- pcfIDsFilter(test.rna)
+idspcf.prot <- pcfIDsFilter(test.prot)
+```
+
+Further, the samples can be filtered based on FOV values, Binding Density, 
+Minimum Nucleus Count, Minimum area etc. This can be acheved using the function `threshIDsFilter()`.
+
+```{r eval=TRUE}
+idstsh.rna <- threshIDsFilter(test.rna)
+idstsh.prot <- threshIDsFilter(test.rna)
+
+## Common IDs can be obtained by
+
+ids <- intersect(idspcf.rna,idstsh.rna)
+```
+# Quality Control and Data Filtering
+
+The QC step involves getting rid of the samples that failed the QC metrics and 
+perform ERCC normalization of the data. The data quality can be evaluated via 
+`ndspaInteractivePlots()` function. The function takes ndspaExperiment object 
+and `assay="counts"` argument to launch a shiny app with insightful plots.Plots
+include `PCA`, `Density`, `Heatmap`, `correlation plots` (Background Vs 
+House Keeping genes) and `SNR levels` etc.
+
+```{r eval=FALSE}
+ndspaInteractivePlots(test.rna)
+```
+
+The Failed Positive Control Factor (PCFs) can be removed from the 
+ndspaExperiment object using ndspaQC function. To check which samples will be 
+retained and which sample will be removed use `tag.only=TRUE` argument. This 
+will tag the samples if `PCF_filt` argument is not `NULL`.
+
+If no additional argument is passed in `ndspaQC` function, only ERCC 
+normalization will be performed with addition of new assay `erccScaled`. QC is 
+not mandatory and can be skipped. However, it is desirable to use ERCC scaled 
+values rather than raw counts.
+
+```{r eval=TRUE}
+dim(test.rna)
+temp <- ndspaQC(test.rna, PCF_filt = ids, tag.only = TRUE)
+table(temp@colData$tag)
+test.rna <- ndspaQC(test.rna, PCF_filt = ids)
+dim(test.rna)
+```
+
+The `thresh_filt` is under development and is not implemented in the current 
+version. Samples are only tagged as "Retained" and "Removed". The samples that 
+are removed during QC are enlisted in the metadata.This is the step, where the
+dimension of the data changes and can be accessed with 
+`test.rna@metadata$QCfilterIds`.
+
+Currently the colData is not populated with the tags of which filter they 
+failed. This functionality will be added later.
+
+# Scaling and normalization
+
+## Scaling
+nDSPA allows scaling of the data using "Area" or "Nuclei". Calculation method 
+for scaling includes "mean" and "geomean" (geometric mean).
+
+```{r eval=TRUE}
+test.rna <- ndspaScale(test.rna,use ="gmean", method = "area")
+```
+## Normalisation
+There are two methods of normalization provided by nDSPA. These include SNR 
+Normalization and HouseKeeping Normalization. The housekeeping normalisation can
+be carried out by using `dspNormalization()` function while the SNR 
+normalization can be performed using `dspSNR()`. The new assays will be named `gmeanHK_Normalised` and `gmeanSNR_Normalised`
+
+
+```{r eval=TRUE}
+test.rna <- dspNormalization(test.rna, use = "gmean", probe.set="all", 
+                             use.assay = "areaScaled")
+```
+# Statistical comparisons
+
+The nDSPA have two separate functions for statistical analysis that are 
+discussed below.
+
+## Dimension Reduction
+
+nDSPA `ndspaReducedims()` function uses `prcomp` for PCA and `M3C` for other 
+low-dimensional representation of the data such as `tsne` and `umap`. To save 
+the embedding produced in the ndspaExperiment object, we will use 
+`reducedDims()` function.
+
+```{r eval=TRUE,message=FALSE,warning = FALSE}
+## Considering only first 50 PCA. The Rank argument is the part of prcomp 
+## function and can be used as:
+test.rna.pca <- ndspaReducedims(test.rna, rank=50)
+test.rna.tsne <- ndspaReducedims(test.rna, type = "tsne",
+                                 labels=test.rna@colData$Scan_ID)
+test.rna.umap <- ndspaReducedims(test.rna, type = "umap",
+                                 labels=test.rna@colData$Scan_ID)
+```
+
+The reduced dimensions can be saved to `ndspaExperiment` object `test.rna` as 
+follows:
+
+```{r eval=TRUE}
+## Adding the low-dimensional embeddings to ndspaExperiment object
+SingleCellExperiment::reducedDims(test.rna) <- list(PCA = test.rna.pca$x, TSNE = test.rna.tsne$data, UMAP=test.rna.umap$data)
+```
+
+Ploting the dimensional data in nDSPA is easy. The `tsne` ans `umap` objects 
+produced by `ndspaReducedims` are ggplot objects. The PCA output is a `prcomp`
+object that can further be input to `fviz_pca_var()` function of `factoextra` 
+package to make publication ready PCA plots. 
+
+```{r eval=TRUE,message=FALSE, warning=FALSE}
+## view PCA plot
+test.rna.pca %>% factoextra::fviz_pca_var(label = "var", title = "Probes", 
+    geom = c("point", "text"), col.var = "contrib") + ggplot2::theme_minimal()
+## or
+test.rna.pca %>% factoextra::fviz_pca_ind(label = "ind", title = "Samples", 
+  geom = c("point"), habillage = test.rna@colData$Scan_ID, addEllipses = TRUE, 
+  ellipse.level = 0.95) + ggplot2::theme_minimal()
+
+## View tsne plot
+test.rna.tsne
+
+## View umap plot
+
+test.rna.umap
+
+
+```
+
+> The assays are log transformed internally before Dimensional Reduction takes 
+place.
+
+## Statistical Analysis
+
+For statistical analysis, we should have group data with us. To load the group 
+data
+
+```{r eval=TRUE,message=FALSE,warning = FALSE}
+
+fpath.rna.gp <- system.file("extdata", "02-3.dsp_group.sim.tsv", package = 
+                           "nDSPA",mustWork = TRUE)
+rna.gp.df = read.delim(fpath.rna.gp, stringsAsFactors = F, header = T)
+
+## Running the statistical analysis
+results <- ndspaStats(test.rna,group.df=rna.gp.df,use.assay = "gmeanHK_Normalised", group.by="Scan_ID",order=c("NR","R"),segment.tag = "CD45+",test="t.test")
+
+```
+
+
+# Session Information {-}
+
+```{r eval=TRUE}
+sessionInfo()
+```
+
+
+
+
+
+

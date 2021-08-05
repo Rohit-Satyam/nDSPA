@@ -92,6 +92,7 @@ dspSNR <- function(seobj, use = "gmean", probe.set = "all", use.assay = "erccSca
   l <- list(norm_mat)
   names(l) <- paste0(use, "SNR_Normalised")
   assays(seobj) <- c(assays(seobj), l)
+  S4Vectors::metadata(seobj) <- c(S4Vectors::metadata(seobj), "Normalization" = paste("SNR normalization was performed on",use.assay,"using",use,". Probset used were:",probe.set))
   return(seobj)
 }
 

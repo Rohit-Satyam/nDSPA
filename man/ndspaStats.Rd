@@ -54,8 +54,10 @@ The ndspaStats function is let user identify Differentially expresed genes for a
 \examples{
 \dontrun{
 # To plot all QC graphs
-dsp.group = read.delim("02-3.dsp_group.sim.tsv", stringsAsFactors = F, header = T)
-results <- ndspaStats(test,group.df=dsp.group,group.by="Scan_ID",order=c("NR","R"),segment.tag = "CD45+",test="t.test")
+dsp.group = read.delim("02-3.dsp_group.sim.tsv",
+stringsAsFactors = F, header = T)
+results <- ndspaStats(test,group.df=dsp.group,group.by="Scan_ID",
+order=c("NR","R"),segment.tag = "CD45+",test="t.test")
 
 
 }
